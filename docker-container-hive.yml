@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
+    ports:
+      - "10000:10000"
+      - "10002:10002"
+    environment:
+      HIVE_INTERACTIVE_ENABLED: "true"
+    networks:
+      - hive-network
+
+  hive-metastore:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
+    environment:
+      HIVE_METASTORE_PORT: "9083"
+    ports:
+      - "9083:9083"
+    networks:
+      - hive-network
+
+  hive-metastore-postgresql:
+    image: postgres:10
+    container_name: hive-metastore-postgresql
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+    ports:
+      - "5432:5432"
+    networks:
+      - hive-network
+
+networks:
+  hive-network:
+    driver: bridge
